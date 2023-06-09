@@ -1,0 +1,139 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DB_URL")
+}
+
+// Danh sách người dùng
+model User {
+  id              Int       @id @default(autoincrement())
+  // ---------FK----------
+  // Tỉnh - Thành Phố
+  province_cityId Int?
+  // Quận - Huyện
+  districtId      Int?
+  // Xã-Phường
+  villageId       Int?
+  // ---------------------
+  // Tên người dùng
+  name            String?
+  // Email người dùng
+  email           String?
+  // Ngày sinh
+  birthday        DateTime?
+  // Giới tính, true === 'Nam'
+  sex             Boolean   @default(true)
+  // Mã quốc gia
+  regionCode      String?   @default("+84")
+  // Số điện thoại, dùng cho sign-in
+  phoneNumber     String    @unique()
+  // Salt, chuỗi bất kỳ dùng cho xác thực mật khẩu
+  salt            String    @default("abcdefgh123456")
+  // Password, mật khẩu đã được mã hoá
+  password        String
+  // Địa chỉ cụ thể
+  address         String?    @db.LongText()
+  // Ngày tạo
+  createdAt       DateTime  @default(now())
+  // Ngày cập nhật
+  updatedAt       DateTime? @updatedAt
+
+  // Relation
+  otps         OTP[]         @relation(name: "user 1-n otp")
+  provinceCity ProvinceCity? @relation(name: "province 1-n user", fields: [province_cityId], references: [id])
+  district     District?     @relation(name: "district 1-n user", fields: [districtId], references: [id])
+  village      Village?      @relation(name: "village 1-n user", fields: [villageId], references: [id])
+
+  @@map("users")
+}
+
+// Danh sách tỉnh thành phố
+model ProvinceCity {
+  id   Int    @id @default(autoincrement())
+  // Mã hành chính tỉnh, thành phố
+  code String @unique()
+  // Tên tỉnh, thành phố
+  name String
+
+  // Relation
+  districts District[] @relation(name: "province 1-n district")
+  villages  Village[]  @relation(name: "province 1-n village")
+  user      User[]     @relation(name: "province 1-n user")
+
+  @@index([code])
+  @@map("province_cities")
+}
+
+// Danh sách quận huyện
+model District {
+  id               Int    @id @default(autoincrement())
+  // Mã hành chính quận huyện
+  code             String @unique()
+  // Mã tỉnh thành
+  provinceCityCode String
+  // Tên quận huyện
+  name             String
+
+  // Relation
+  provinceCity ProvinceCity @relation(name: "province 1-n district", fields: [provinceCityCode], references: [code])
+  villages     Village[]    @relation(name: "district 1-n village")
+  user         User[]       @relation(name: "district 1-n user")
+
+  @@index([code])
+  @@map("districts")
+}
+
+// Danh sách phường xã
+model Village {
+  id               Int    @id @default(autoincrement())
+  // Mã hành chính phường xã
+  code             String @unique()
+  // Tên phường xã
+  name             String
+  // Tên phường xã viết tắt
+  shortenName      String
+  // Mã tỉnh thành
+  provinceCityCode String
+  // Mã quận huyện
+  districtCode     String
+
+  // Relation
+  provinceCity ProvinceCity @relation(name: "province 1-n village", fields: [provinceCityCode], references: [code])
+  district     District     @relation(name: "district 1-n village", fields: [districtCode], references: [code])
+  user         User[]       @relation(name: "village 1-n user")
+
+  @@index([provinceCityCode, districtCode])
+  @@map("villages")
+}
+
+enum OTPAction {
+  DEFAULT
+  ONBOARD
+  FORGOT_PASSWORD
+}
+// OTP - One Time Password
+model OTP {
+  id        Int       @id @default(autoincrement())
+  // ---------FK----------
+  // Mã người dùng
+  userId    Int
+  // ---------------------
+  // Hành động
+  action    OTPAction @default(DEFAULT)
+  // Thời gian hết hạn
+  expiredAt DateTime?
+  // Mã OTP
+  code      String    @db.LongText()
+  // Ngày tạo
+  createdAt DateTime  @default(now())
+  // Ngày cập nhật
+  updatedAt DateTime? @updatedAt
+
+  // Relation
+  user User @relation(name: "user 1-n otp", fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@map("otps")
+}

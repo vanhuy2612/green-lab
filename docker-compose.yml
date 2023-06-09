@@ -1,0 +1,18 @@
+version: '3.7'
+services: 
+    pg:
+        image: mysql
+        container_name: 'db_green_lab'
+        restart: always
+        ports: 
+            - "3306:3306"
+        # Volumes : find folder mounts by : docker inspect <container name> -> object Mounts: [{destination: <folder to mounts>}, {}] 
+        volumes: 
+            - ./docker/init.sql:/docker-entrypoint-initdb.d/init-database.sql
+            - ./docker/data:/var/lib/mysql
+        environment: 
+            MYSQL_DATABASE: 'green_lab'
+            MYSQL_ROOT_PASSWORD: '123456'
+            MYSQL_USER: 'admin' 
+            MYSQL_PASSWORD: '123456'
+        command: --default-authentication-plugin=mysql_native_password
