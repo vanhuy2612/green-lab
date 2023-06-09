@@ -29,6 +29,14 @@ export const ERROR_MESSAGES: ErrorMessageT = {
     code: 6,
     message: 'Password không hợp lệ',
   },
+  USER_ALREADY_EXIST: {
+    code: 7,
+    message: 'User đã tồn tại trong hệ thống',
+  },
+  OTP_IS_INVALID: {
+    code: 8,
+    message: 'Mã OTP không hợp lệ',
+  },
 };
 
 export default ERROR_MESSAGES;

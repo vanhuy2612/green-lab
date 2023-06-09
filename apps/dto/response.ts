@@ -81,9 +81,15 @@ export class UserUpdateResponse {
   data: boolean;
 }
 
+class SignUpDataDTO {
+  @ApiProperty()
+  id: number;
+  @ApiProperty()
+  phoneNumber: string;
+}
 export class SignUpResponse {
   @ApiProperty()
   status: HttpStatus;
   @ApiProperty()
-  data: boolean;
+  data: SignUpDataDTO;
 }

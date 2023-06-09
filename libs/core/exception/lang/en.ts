@@ -29,6 +29,14 @@ export const ERROR_MESSAGES: ErrorMessageT = {
     code: 6,
     message: 'PASSWORD_IS_INVALID',
   },
+  USER_ALREADY_EXIST: {
+    code: 7,
+    message: 'USER_ALREADY_EXIST',
+  },
+  OTP_IS_INVALID: {
+    code: 8,
+    message: 'OTP_IS_INVALID',
+  },
 };
 
 export default ERROR_MESSAGES;

@@ -1,5 +1,8 @@
 import { authConfig } from "@root/apps/shared/auth";
 import * as bcrypt from 'bcrypt'
+import * as moment from "moment";
+
+export const unixMoment = moment.utc;
 /**
  * Hash password
  * @param plainPassword
