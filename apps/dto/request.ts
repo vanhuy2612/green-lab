@@ -85,7 +85,10 @@ export class SendOTPRequest {
   @Matches(PHONE_NUMBER_REGEX)
   phoneNumber: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    enum: OTPAction,
+    example: Object.keys(OTPAction).join(' | '),
+  })
   @ValidateIf( (object, value) => (!!value && typeof value === 'string'))
   action: OTPAction;
 }

@@ -1,5 +1,6 @@
 import { HttpStatus } from '@nestjs/common';
 import { ApiProperty } from '@nestjs/swagger';
+import { ErrorMessageKey } from '@root/libs/core/exception/lang';
 
 export class PaginatedResponse<TData> {
   @ApiProperty()
@@ -20,7 +21,7 @@ export class PaginatedResponse<TData> {
 
 export class ExceptionDTO {
   @ApiProperty()
-  code: number;
+  code: ErrorMessageKey;
 
   @ApiProperty()
   message: string;
