@@ -1,7 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNumber, IsString, Length, Matches, Max, MaxLength, Min, MinLength } from 'class-validator';
+import { IsNumber, IsString, Length, Matches, Max, MaxLength, Min, MinLength, ValidateIf } from 'class-validator';
 import { OTP_REGEX, PASSWORD_REGEX, PHONE_NUMBER_REGEX } from '@root/apps/shared/regex';
 import { IsEqualTo } from '@root/apps/util/validation';
+import { OTPAction } from '@prisma/client';
 
 export class LoginRequest {
   @ApiProperty()
@@ -74,4 +75,17 @@ export class UserUpdateInput {
 export class UserUpdateRequest {
   @ApiProperty({ type: UserUpdateInput })
   data: UserUpdateInput;
+}
+
+export class SendOTPRequest {
+  @ApiProperty()
+  @IsString()
+  @MinLength(5)
+  @MaxLength(20)
+  @Matches(PHONE_NUMBER_REGEX)
+  phoneNumber: string;
+
+  @ApiProperty()
+  @ValidateIf( (object, value) => (!!value && typeof value === 'string'))
+  action: OTPAction;
 }

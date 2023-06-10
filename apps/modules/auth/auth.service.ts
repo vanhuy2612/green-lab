@@ -7,6 +7,7 @@ import { ErrorMessageKey } from "@root/libs/core/exception/lang";
 import {
   LoginResponse,
   RefreshTokenResponse,
+  SendOTPResponse,
   SignUpResponse,
 } from "@root/apps/dto/response";
 import {
@@ -19,7 +20,8 @@ import { OTP, User } from "@prisma/client";
 import { authConfig } from "@root/apps/shared/auth";
 import { compare, hash, unixMoment } from "@root/apps/util/util";
 import { v4 } from "uuid";
-import Env from "@root/libs/Env";
+import { ESMSService } from "@root/apps/service/esms";
+import { ThirdPartyResponse } from "@root/apps/service";
 
 @Injectable()
 export class AuthService extends BaseService {
@@ -177,7 +179,20 @@ export class AuthService extends BaseService {
     };
   }
 
-  async sendOTP(params: any): Promise<string> {
-    return "1234";
+  async sendOTP(params: any): Promise<SendOTPResponse> {
+    const service = new ESMSService();
+    const { phoneNumber } = params;
+    const content = "Content which is send to client is created by GreenLab";
+    const result: ThirdPartyResponse<boolean> = await service.sendOTP(
+      phoneNumber,
+      content
+    );
+    if (!result.error) {
+      throw new APIException(HttpStatus.INTERNAL_SERVER_ERROR, ErrorMessageKey);
+    }
+    return {
+      status: HttpStatus.OK,
+      data: true,
+    };
   }
 }

@@ -104,3 +104,10 @@ export class SignUpResponse {
   @ApiProperty()
   data: SignUpDataDTO;
 }
+
+export class SendOTPResponse {
+  @ApiProperty()
+  status: HttpStatus;
+  @ApiProperty()
+  data: boolean;
+}

@@ -5,11 +5,13 @@ import { Exception } from "@root/libs/core/exception/Exception";
 import {
   LoginResponse,
   RefreshTokenResponse,
+  SendOTPResponse,
   SignUpResponse,
 } from "@root/apps/dto/response";
 import {
   LoginRequest,
   RefreshTokenRequest,
+  SendOTPRequest,
   SignUpRequest,
 } from "@root/apps/dto/request";
 import { ApiTags } from "@nestjs/swagger";
@@ -45,7 +47,10 @@ export class AuthController {
   @Post("signUp")
   @CustomApiOKResponse(SignUpResponse)
   @ApiExceptionResponse()
-  async signUp(@Body() body: SignUpRequest, @Req() req: any): Promise<SignUpResponse> {
+  async signUp(
+    @Body() body: SignUpRequest,
+    @Req() req: any
+  ): Promise<SignUpResponse> {
     try {
       const res = await this.authService.signUp(body);
       return res;
@@ -71,7 +76,10 @@ export class AuthController {
 
   @Post("sendOTP")
   @ApiExceptionResponse()
-  async sendOTP(@Body() body: any, @Req() req: any) {
+  async sendOTP(
+    @Body() body: SendOTPRequest,
+    @Req() req: any
+  ): Promise<SendOTPResponse> {
     try {
       const res = await this.authService.sendOTP(body);
       return res;

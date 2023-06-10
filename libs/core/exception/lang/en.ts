@@ -41,6 +41,10 @@ export const ERROR_MESSAGES: ErrorMessageT = {
     code: ErrorMessageKey.REFRESH_TOKEN_IS_INVALID,
     message: 'REFRESH_TOKEN_IS_INVALID'
   },
+  THIRD_PARTY_HAS_SOME_PROBLEM: {
+    code: ErrorMessageKey.THIRD_PARTY_HAS_SOME_PROBLEM,
+    message: 'THIRD_PARTY_HAS_SOME_PROBLEM'
+  },
 };
 
 export default ERROR_MESSAGES;

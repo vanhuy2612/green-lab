@@ -41,6 +41,10 @@ export const ERROR_MESSAGES: ErrorMessageT = {
     code: ErrorMessageKey.REFRESH_TOKEN_IS_INVALID,
     message: 'Refresh Token không hợp lệ',
   },
+  THIRD_PARTY_HAS_SOME_PROBLEM: {
+    code: ErrorMessageKey.THIRD_PARTY_HAS_SOME_PROBLEM,
+    message: 'Dịch vụ bên thứ 3 gặp một số vấn đề',
+  },
 };
 
 export default ERROR_MESSAGES;
