@@ -9,6 +9,7 @@ import { Request, Response } from 'express';
 import { APIException } from './APIException';
 import { ErrorMessageT } from './lang';
 import { ThrottlerException } from '@nestjs/throttler';
+import { PrismaClientExtensionError, PrismaClientInitializationError, PrismaClientKnownRequestError, PrismaClientRustPanicError, PrismaClientValidationError } from '@prisma/client/runtime';
 
 @Catch(HttpException)
 export class CustomExceptionFilter implements ExceptionFilter {
@@ -49,12 +50,27 @@ export class CustomExceptionFilter implements ExceptionFilter {
     }
 
     if (exception instanceof BadRequestException) {
-      console.log(exception.getResponse())
       return response.status(status).json({
         statusCode: status,
         timestamp: new Date().toISOString(),
         path: request.url,
         error: (exception.getResponse() as any).message || ERROR_MESSAGES['UNKNOWN'],
+      });
+    }
+
+    if (
+      exception instanceof PrismaClientExtensionError || 
+      exception instanceof PrismaClientRustPanicError ||
+      exception instanceof PrismaClientValidationError || 
+      exception instanceof PrismaClientKnownRequestError ||
+      exception instanceof PrismaClientInitializationError ||
+      exception instanceof PrismaClientInitializationError
+    ) {
+      return response.status(500).json({
+        statusCode: 500,
+        timestamp: new Date().toISOString(),
+        path: request.url,
+        error: (exception.getResponse() as any).message,
       });
     }
 

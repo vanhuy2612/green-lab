@@ -8,11 +8,12 @@ export enum ErrorMessageKey {
   PASSWORD_IS_INVALID = 'PASSWORD_IS_INVALID',
   USER_ALREADY_EXIST = 'USER_ALREADY_EXIST',
   OTP_IS_INVALID = 'OTP_IS_INVALID',
+  REFRESH_TOKEN_IS_INVALID= 'REFRESH_TOKEN_IS_INVALID',
 }
 
 export type ErrorMessageT = {
   [key in ErrorMessageKey]: {
-    code: number;
+    code: ErrorMessageKey;
     message: string;
   };
 };

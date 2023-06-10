@@ -19,6 +19,12 @@ export class LoginRequest {
   password: string;
 }
 
+export class RefreshTokenRequest {
+  @ApiProperty()
+  @IsString()
+  refreshToken: string;
+}
+
 export class SignUpRequest {
   @ApiProperty()
   @IsString()

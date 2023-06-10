@@ -1,41 +1,45 @@
-import { ErrorMessageT } from './';
+import { ErrorMessageKey, ErrorMessageT } from './';
 
 export const ERROR_MESSAGES: ErrorMessageT = {
   UNKNOWN: {
-    code: -1,
+    code: ErrorMessageKey.UNKNOWN,
     message: 'Lỗi không xác định',
   },
   USER_NOT_FOUND: {
-    code: 1,
+    code: ErrorMessageKey.USER_NOT_FOUND,
     message: 'Không tìm thấy user',
   },
   USERS_EMPTY: {
-    code: 2,
+    code: ErrorMessageKey.USERS_EMPTY,
     message: 'Dữ liệu rỗng',
   },
   TOKEN_IS_INVALID: {
-    code: 3,
+    code: ErrorMessageKey.TOKEN_IS_INVALID,
     message: 'Token không hợp lệ',
   },
   PERMISSION_DENIED: {
-    code: 4,
+    code: ErrorMessageKey.PERMISSION_DENIED,
     message: 'Không có quyền truy cập',
   },
   TOO_MANY_REQUEST: {
-    code: 5,
+    code: ErrorMessageKey.TOO_MANY_REQUEST,
     message: 'Quá nhiều yêu cầu truy cập',
   },
   PASSWORD_IS_INVALID: {
-    code: 6,
+    code: ErrorMessageKey.PASSWORD_IS_INVALID,
     message: 'Password không hợp lệ',
   },
   USER_ALREADY_EXIST: {
-    code: 7,
+    code: ErrorMessageKey.USER_ALREADY_EXIST,
     message: 'User đã tồn tại trong hệ thống',
   },
   OTP_IS_INVALID: {
-    code: 8,
+    code: ErrorMessageKey.OTP_IS_INVALID,
     message: 'Mã OTP không hợp lệ',
+  },
+  REFRESH_TOKEN_IS_INVALID: {
+    code: ErrorMessageKey.REFRESH_TOKEN_IS_INVALID,
+    message: 'Refresh Token không hợp lệ',
   },
 };
 

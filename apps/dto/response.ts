@@ -57,9 +57,20 @@ export class AccountDTO {
 
 export class LoginDataDTO {
   @ApiProperty()
-  token: string;
+  accessToken: string;
+
+  @ApiProperty()
+  refreshToken: string;
 }
 export class LoginResponse {
+  @ApiProperty()
+  statusCode: HttpStatus;
+
+  @ApiProperty({ type: LoginDataDTO })
+  data: LoginDataDTO;
+}
+
+export class RefreshTokenResponse {
   @ApiProperty()
   statusCode: HttpStatus;
 

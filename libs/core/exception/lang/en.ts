@@ -1,41 +1,45 @@
-import { ErrorMessageT } from './';
+import { ErrorMessageKey, ErrorMessageT } from './';
 
 export const ERROR_MESSAGES: ErrorMessageT = {
   UNKNOWN: {
-    code: -1,
+    code: ErrorMessageKey.UNKNOWN,
     message: 'UNKNOWN',
   },
   USER_NOT_FOUND: {
-    code: 1,
+    code: ErrorMessageKey.USER_NOT_FOUND,
     message: 'USER_NOT_FOUND',
   },
   USERS_EMPTY: {
-    code: 2,
+    code: ErrorMessageKey.USERS_EMPTY,
     message: 'USERS_EMPTY',
   },
   TOKEN_IS_INVALID: {
-    code: 3,
+    code: ErrorMessageKey.TOKEN_IS_INVALID,
     message: 'TOKEN_IS_INVALID',
   },
   PERMISSION_DENIED: {
-    code: 4,
+    code: ErrorMessageKey.PERMISSION_DENIED,
     message: 'PERMISSION_DENIED',
   },
   TOO_MANY_REQUEST: {
-    code: 5,
+    code: ErrorMessageKey.TOO_MANY_REQUEST,
     message: 'TOO_MANY_REQUEST',
   },
   PASSWORD_IS_INVALID: {
-    code: 6,
+    code: ErrorMessageKey.PASSWORD_IS_INVALID,
     message: 'PASSWORD_IS_INVALID',
   },
   USER_ALREADY_EXIST: {
-    code: 7,
+    code: ErrorMessageKey.USER_ALREADY_EXIST,
     message: 'USER_ALREADY_EXIST',
   },
   OTP_IS_INVALID: {
-    code: 8,
+    code: ErrorMessageKey.OTP_IS_INVALID,
     message: 'OTP_IS_INVALID',
+  },
+  REFRESH_TOKEN_IS_INVALID: {
+    code: ErrorMessageKey.REFRESH_TOKEN_IS_INVALID,
+    message: 'REFRESH_TOKEN_IS_INVALID'
   },
 };
 

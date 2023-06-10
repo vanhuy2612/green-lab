@@ -4,13 +4,22 @@ import { APIException } from "@root/libs/core/exception/APIException";
 import { PrismaService } from "@root/libs/core/database/index.service";
 import { LoggerService } from "@root/libs/core/logger/index.service";
 import { ErrorMessageKey } from "@root/libs/core/exception/lang";
-import { LoginResponse, SignUpResponse } from "@root/apps/dto/response";
-import { LoginRequest, SignUpRequest } from "@root/apps/dto/request";
+import {
+  LoginResponse,
+  RefreshTokenResponse,
+  SignUpResponse,
+} from "@root/apps/dto/response";
+import {
+  LoginRequest,
+  RefreshTokenRequest,
+  SignUpRequest,
+} from "@root/apps/dto/request";
 import { JwtService } from "@nestjs/jwt";
 import { OTP, User } from "@prisma/client";
 import { authConfig } from "@root/apps/shared/auth";
 import { compare, hash, unixMoment } from "@root/apps/util/util";
-import { v4 } from 'uuid';
+import { v4 } from "uuid";
+import Env from "@root/libs/Env";
 
 @Injectable()
 export class AuthService extends BaseService {
@@ -28,6 +37,7 @@ export class AuthService extends BaseService {
     const user: User | null = await this.model.findFirst({
       where: {
         phoneNumber,
+        deletedAt: null,
       },
     });
     if (!user) {
@@ -45,18 +55,78 @@ export class AuthService extends BaseService {
       );
     }
     const { salt: _salt, password: _password, ...other } = user;
+    const accessToken: string = this.jwtService.sign(
+      {
+        ...other,
+      },
+      {
+        secret: authConfig.JWT_SECRET_KEY,
+        expiresIn: authConfig.JWT_ACCESS_TOKEN_EXPIRE_IN,
+      }
+    );
+    const refreshToken: string = this.jwtService.sign(
+      {
+        id: user.id,
+      },
+      {
+        secret: authConfig.JWT_SECRET_KEY,
+        expiresIn: authConfig.JWT_REFRESH_TOKEN_EXPIRE_IN,
+      }
+    );
     return {
       statusCode: HttpStatus.OK,
       data: {
-        token: this.jwtService.sign(
-          {
-            ...other,
-          },
-          {
-            secret: authConfig.JWT_SECRET_KEY,
-            expiresIn: authConfig.JWT_EXPIRE_IN,
-          }
-        ),
+        accessToken,
+        refreshToken,
+      },
+    };
+  }
+
+  async refreshToken(
+    params: RefreshTokenRequest
+  ): Promise<RefreshTokenResponse> {
+    const { refreshToken } = params;
+    let auth: { id: number };
+    try {
+      auth = this.jwtService.verify(refreshToken, {
+        secret: authConfig.JWT_SECRET_KEY,
+      }) as { id: number };
+    } catch (e) {
+      throw new APIException(
+        HttpStatus.UNAUTHORIZED,
+        ErrorMessageKey.REFRESH_TOKEN_IS_INVALID
+      );
+    }
+
+    const user: User | null = await this.model.findFirst({
+      where: {
+        id: auth.id,
+        deletedAt: null,
+      },
+    });
+    if (!user) {
+      throw new APIException(
+        HttpStatus.NOT_FOUND,
+        ErrorMessageKey.USER_NOT_FOUND
+      );
+    }
+
+    const { salt: _salt, password: _password, ...other } = user;
+    const accessToken: string = this.jwtService.sign(
+      {
+        ...other,
+      },
+      {
+        secret: authConfig.JWT_SECRET_KEY,
+        expiresIn: authConfig.JWT_ACCESS_TOKEN_EXPIRE_IN,
+      }
+    );
+
+    return {
+      statusCode: HttpStatus.OK,
+      data: {
+        accessToken,
+        refreshToken,
       },
     };
   }
@@ -69,19 +139,25 @@ export class AuthService extends BaseService {
         code: otp,
         expiredAt: {
           gte: unixMoment().format(),
-        }
-      }
+        },
+      },
     });
     if (!validOTP) {
-      throw new APIException(HttpStatus.BAD_REQUEST, ErrorMessageKey.OTP_IS_INVALID);
+      throw new APIException(
+        HttpStatus.BAD_REQUEST,
+        ErrorMessageKey.OTP_IS_INVALID
+      );
     }
     const existUser: User | null = await this.model.findFirst({
       where: {
         phoneNumber,
-      }
+      },
     });
     if (existUser) {
-      throw new APIException(HttpStatus.BAD_REQUEST, ErrorMessageKey.USER_ALREADY_EXIST);
+      throw new APIException(
+        HttpStatus.BAD_REQUEST,
+        ErrorMessageKey.USER_ALREADY_EXIST
+      );
     }
     const salt: string = v4();
     const encryptedPassword: string = await hash(password, salt);
@@ -90,14 +166,18 @@ export class AuthService extends BaseService {
         phoneNumber,
         salt,
         password: encryptedPassword,
-      }
+      },
     });
     return {
       status: HttpStatus.OK,
       data: {
         id: created.id,
-        phoneNumber: created.phoneNumber
+        phoneNumber: created.phoneNumber,
       },
     };
+  }
+
+  async sendOTP(params: any): Promise<string> {
+    return "1234";
   }
 }
