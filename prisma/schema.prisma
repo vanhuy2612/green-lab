@@ -119,26 +119,27 @@ enum OTPAction {
 
 // OTP - One Time Password
 model OTP {
-  id        Int       @id @default(autoincrement())
+  id          String       @id @default(uuid())
   // ---------FK----------
   // Mã người dùng
-  userId    Int?
+  userId      Int?
   // ---------------------
   // Số điện thoại
   phoneNumber String?
   // Hành động
-  action    OTPAction @default(DEFAULT)
+  action      OTPAction @default(DEFAULT)
   // Thời gian hết hạn
-  expiredAt DateTime?
+  expiredAt   DateTime?
   // Mã OTP
-  code      String    @db.LongText()
+  code        String    @db.LongText()
   // Ngày tạo
-  createdAt DateTime  @default(now())
+  createdAt   DateTime  @default(now())
   // Ngày cập nhật
-  updatedAt DateTime? @updatedAt
-
+  updatedAt   DateTime? @updatedAt
+  // Ngày xoá
+  deletedAt   DateTime?
   // Relation
-  user User? @relation(name: "user 1-n otp", fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  user        User?     @relation(name: "user 1-n otp", fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   @@map("otps")
 }

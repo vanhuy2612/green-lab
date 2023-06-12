@@ -13,15 +13,17 @@ import {
 import {
   LoginRequest,
   RefreshTokenRequest,
+  SendOTPRequest,
   SignUpRequest,
 } from "@root/apps/dto/request";
 import { JwtService } from "@nestjs/jwt";
-import { OTP, User } from "@prisma/client";
+import { OTP, Prisma, User } from "@prisma/client";
 import { authConfig } from "@root/apps/shared/auth";
-import { compare, hash, unixMoment } from "@root/apps/util/util";
+import { compare, generateOTP, hash, unixMoment } from "@root/apps/util/util";
 import { v4 } from "uuid";
 import { ESMSService } from "@root/apps/service/esms";
 import { ThirdPartyResponse } from "@root/apps/service";
+import { OTP_EXPIRE_IN } from "@root/apps/shared/constant";
 
 @Injectable()
 export class AuthService extends BaseService {
@@ -145,10 +147,10 @@ export class AuthService extends BaseService {
       },
     });
     if (!validOTP) {
-      throw new APIException(
-        HttpStatus.BAD_REQUEST,
-        ErrorMessageKey.OTP_IS_INVALID
-      );
+        throw new APIException(
+          HttpStatus.BAD_REQUEST,
+          ErrorMessageKey.OTP_IS_INVALID
+        );
     }
     const existUser: User | null = await this.model.findFirst({
       where: {
@@ -179,10 +181,62 @@ export class AuthService extends BaseService {
     };
   }
 
-  async sendOTP(params: any): Promise<SendOTPResponse> {
+  async sendOTP(params: SendOTPRequest): Promise<SendOTPResponse> {
     const service = new ESMSService();
-    const { phoneNumber } = params;
-    const content = "Content which is send to client is created by GreenLab";
+    const { phoneNumber, userId, action } = params;
+    if (!phoneNumber && !userId) {
+      throw new APIException(
+        HttpStatus.BAD_REQUEST,
+        ErrorMessageKey.BAD_REQUEST
+      );
+    }
+    if (userId) {
+      const user: User | null = await this.model.findFirst({
+        where: {
+          id: userId,
+          deletedAt: null,
+        },
+      });
+      if (!user) {
+        throw new APIException(
+          HttpStatus.NOT_FOUND,
+          ErrorMessageKey.USER_NOT_FOUND
+        );
+      }
+    }
+    const otpCode: string = generateOTP();
+
+    const otp: OTP = await this.prismaService.$transaction<OTP>(
+      async (prismaTrx: Prisma.TransactionClient) => {
+        await prismaTrx.oTP.deleteMany({
+          where: {
+            OR: [
+              {
+                expiredAt: {
+                  lte: unixMoment().format(),
+                },
+              },
+              {
+                phoneNumber,
+                userId,
+                action,
+              },
+            ],
+          },
+        });
+        return await prismaTrx.oTP.create({
+          data: {
+            userId,
+            phoneNumber,
+            code: otpCode,
+            action,
+            expiredAt: unixMoment().add("second", OTP_EXPIRE_IN).format(),
+          },
+        });
+      }
+    );
+    const content = `Your OTP is ${otp.code}`;
+    console.log(content);
     const result: ThirdPartyResponse<boolean> = await service.sendOTP(
       phoneNumber,
       content

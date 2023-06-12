@@ -33,3 +33,13 @@ export const compare = async (
     encryptedPassword
   );
 };
+
+/**
+ * Generate OTP
+ * @returns OTP with len = 4 character
+ */
+export const generateOTP = (): string => {
+  const min = 1000;
+  const max = 9999;
+  return `${Math.round(Math.random() * (max - min) + min)}`;
+}

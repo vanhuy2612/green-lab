@@ -45,6 +45,10 @@ export const ERROR_MESSAGES: ErrorMessageT = {
     code: ErrorMessageKey.THIRD_PARTY_HAS_SOME_PROBLEM,
     message: 'Dịch vụ bên thứ 3 gặp một số vấn đề',
   },
+  BAD_REQUEST: {
+    code: ErrorMessageKey.BAD_REQUEST,
+    message: 'BAD_REQUEST',
+  },
 };
 
 export default ERROR_MESSAGES;
