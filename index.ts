@@ -1,6 +1,6 @@
-'use strict';
-import Server from '@root/libs/server';
-import { ClusterService } from '@root/libs/core/cluster';
+"use strict";
+import Server from "@root/libs/server";
+import { ClusterService } from "@root/libs/core/cluster";
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 // const ex_util = require('./build/Release/ex_util.node');
 (async function start() {

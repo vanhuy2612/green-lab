@@ -1,7 +1,7 @@
-import { Injectable, NestMiddleware } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
-import { PrismaService } from '@root/libs/core/database/index.service';
-import { LoggerService } from '@root/libs/core/logger/index.service';
+import { Injectable, NestMiddleware } from "@nestjs/common";
+import { JwtService } from "@nestjs/jwt";
+import { PrismaService } from "@root/libs/core/database/index.service";
+import { LoggerService } from "@root/libs/core/logger/index.service";
 
 @Injectable()
 export class BaseMiddleware implements NestMiddleware {

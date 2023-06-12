@@ -1,6 +1,8 @@
-import { INestApplication, Injectable, OnModuleInit } from '@nestjs/common';
-import { Prisma, PrismaClient } from '@prisma/client';
-import { URLSearchParams } from 'url';
+import { INestApplication, Injectable, OnModuleInit } from "@nestjs/common";
+import { Prisma, PrismaClient } from "@prisma/client";
+import { URLSearchParams } from "url";
+import { exec } from "child_process";
+import { cwd } from "process";
 
 type DBConfig = {
   DB_TYPE: string;
@@ -20,12 +22,24 @@ type DBConfig = {
 export class PrismaService extends PrismaClient implements OnModuleInit {
   async onModuleInit() {
     await this.$connect();
-    console.log('************ Database connected ******************');
+    console.log("************ Database connected ******************");
     this.$use(this.paginationMiddleware);
+    if (process.env.NODE_ENV !== "development") {
+      exec(
+        `sh ${cwd()}/libs/core/database/bash.sh`,
+        function (err, stdout, stderr) {
+          if (err) {
+            console.log(err);
+          } else {
+            console.log("Migrate DB done...");
+          }
+        }
+      );
+    }
   }
 
   async enableShutdownHooks(app: INestApplication) {
-    this.$on('beforeExit', async () => {
+    this.$on("beforeExit", async () => {
       await app.close();
     });
   }

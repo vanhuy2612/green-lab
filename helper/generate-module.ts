@@ -1,22 +1,22 @@
-import chalk from 'chalk';
-import fs from 'fs';
-import path from 'path';
+import chalk from "chalk";
+import fs from "fs";
+import path from "path";
 
 const keyword = {
-  help: ['-h', '--help'],
-  name: ['-n', '--name'],
-  force: ['-f', '--force'],
+  help: ["-h", "--help"],
+  name: ["-n", "--name"],
+  force: ["-f", "--force"],
 };
 
 const alertSyntax = (type: string) => {
-  if (type == 'name') {
+  if (type == "name") {
     console.log(
       chalk.red(
         `
             Module name is invalid.
             Please try again. Command: yarn gen:module --name <module_name> or -n <module_name>
-            `,
-      ),
+            `
+      )
     );
   }
 };
@@ -31,8 +31,8 @@ const alertGuide = () => {
         -h, --help: Guide,
         -n, --name: Name of Module,
         -f, --force: Force process
-      `,
-    ),
+      `
+    )
   );
 };
 
@@ -49,8 +49,8 @@ const validateCommandValue = (name: string) => {
   if (!isValid) {
     console.log(
       chalk.red(
-        `The value "${name}" is invalid, it only has a-z, A-Z, 0-9, _ or - character.`,
-      ),
+        `The value "${name}" is invalid, it only has a-z, A-Z, 0-9, _ or - character.`
+      )
     );
     process.exit(2);
   }
@@ -58,7 +58,7 @@ const validateCommandValue = (name: string) => {
 };
 
 const parseCommand = (args: string[]) => {
-  let name = '';
+  let name = "";
   let isForce = false;
   if (args.length < 3) {
     alertGuide();
@@ -67,10 +67,10 @@ const parseCommand = (args: string[]) => {
   for (let i = 0; i < args.length; i++) {
     const word = args[i];
     const key: string = isKeyword(word);
-    if (key == 'help') {
+    if (key == "help") {
       alertGuide();
       process.exit(0);
-    } else if (key == 'name') {
+    } else if (key == "name") {
       const nextWord = args[i + 1];
       if (nextWord && !isKeyword(nextWord)) {
         validateCommandValue(nextWord);
@@ -79,7 +79,7 @@ const parseCommand = (args: string[]) => {
         alertSyntax(key);
         process.exit(1);
       }
-    } else if (key == 'force') {
+    } else if (key == "force") {
       isForce = true;
     } else {
     }
@@ -108,7 +108,7 @@ const createModuleFile = (moduleName: string) => {
   try {
     const upperModuleName = upperCaseFirstLetter(moduleName);
     const modulePath = path.resolve(
-      `${__dirname}/../apps/modules/${moduleName}/${moduleName}.module.ts`,
+      `${__dirname}/../apps/modules/${moduleName}/${moduleName}.module.ts`
     );
     const content = `
     import { Module } from '@nestjs/common';
@@ -130,7 +130,7 @@ const createControllerFile = (moduleName: string) => {
   try {
     const upperModuleName = upperCaseFirstLetter(moduleName);
     const modulePath = path.resolve(
-      `${__dirname}/../apps/modules/${moduleName}/${moduleName}.controller.ts`,
+      `${__dirname}/../apps/modules/${moduleName}/${moduleName}.controller.ts`
     );
     const content = `
     import { Controller } from '@nestjs/common';
@@ -151,7 +151,7 @@ const createServiceFile = (moduleName) => {
   try {
     const upperModuleName = upperCaseFirstLetter(moduleName);
     const modulePath = path.resolve(
-      `${__dirname}/../apps/modules/${moduleName}/${moduleName}.service.ts`,
+      `${__dirname}/../apps/modules/${moduleName}/${moduleName}.service.ts`
     );
     const content = `
     import { Injectable } from '@nestjs/common';
@@ -183,7 +183,7 @@ const createUnitTestFile = (moduleName: string) => {
   try {
     const upperModuleName = upperCaseFirstLetter(moduleName);
     const modulePath = path.resolve(
-      `${__dirname}/../apps/modules/${moduleName}/${moduleName}.controller.spec.ts`,
+      `${__dirname}/../apps/modules/${moduleName}/${moduleName}.controller.spec.ts`
     );
     const content = `
     import { Test, TestingModule } from '@nestjs/testing';
@@ -215,7 +215,7 @@ const createUnitTestFile = (moduleName: string) => {
 
 const generateModule = (moduleName: string, delExistModule: boolean) => {
   const modulePath = path.resolve(`${__dirname}/../apps/modules/${moduleName}`);
-  console.log('modulePath', modulePath);
+  console.log("modulePath", modulePath);
   if (delExistModule) {
     try {
       fs.rmSync(modulePath, { recursive: true, force: true });

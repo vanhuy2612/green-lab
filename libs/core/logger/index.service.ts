@@ -1,10 +1,10 @@
-import { INestApplication, Injectable, OnModuleInit } from '@nestjs/common';
-import { PrismaClient } from '@prisma/client';
+import { INestApplication, Injectable, OnModuleInit } from "@nestjs/common";
+import { PrismaClient } from "@prisma/client";
 
 @Injectable()
 export class LoggerService implements OnModuleInit {
   async onModuleInit() {
-    console.log('************ Logger is running ******************');
+    console.log("************ Logger is running ******************");
   }
 
   /**

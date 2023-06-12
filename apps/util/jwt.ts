@@ -1,5 +1,5 @@
 export const generateJWT = (data: any): string => {
-  return '';
+  return "";
 };
 
 export const verifyJWT = (token: string): boolean => {

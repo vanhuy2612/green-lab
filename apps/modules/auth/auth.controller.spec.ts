@@ -1,8 +1,8 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { AuthController } from './auth.controller';
-import { AuthService } from './auth.service';
+import { Test, TestingModule } from "@nestjs/testing";
+import { AuthController } from "./auth.controller";
+import { AuthService } from "./auth.service";
 
-describe('AuthController', () => {
+describe("AuthController", () => {
   let authController: AuthController;
 
   beforeEach(async () => {
@@ -14,9 +14,17 @@ describe('AuthController', () => {
     authController = app.get<AuthController>(AuthController);
   });
 
-  describe('root', () => {
-    it('should return "Hello World!"', () => {
-      expect(authController.login({})).toBe('Hello World!');
+  describe("API login", () => {
+    it("Case success", () => {
+      expect(
+        authController.login(
+          {
+            phoneNumber: "0362091356",
+            password: "123",
+          },
+          {}
+        )
+      ).toBe("Hello World!");
     });
   });
 });

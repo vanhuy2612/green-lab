@@ -1,6 +1,6 @@
-import { HttpStatus } from '@nestjs/common';
-import { ApiProperty } from '@nestjs/swagger';
-import { ErrorMessageKey } from '@root/libs/core/exception/lang';
+import { HttpStatus } from "@nestjs/common";
+import { ApiProperty } from "@nestjs/swagger";
+import { ErrorMessageKey } from "@root/libs/core/exception/lang";
 
 export class PaginatedResponse<TData> {
   @ApiProperty()
@@ -111,4 +111,15 @@ export class SendOTPResponse {
   status: HttpStatus;
   @ApiProperty()
   data: boolean;
+}
+
+export class CityDTO {
+  @ApiProperty()
+  id: number;
+
+  @ApiProperty()
+  code: string;
+
+  @ApiProperty()
+  name: string;
 }

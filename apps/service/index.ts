@@ -23,9 +23,9 @@ export type ThirdPartyResponse<T> = {
 };
 
 export type SendOTPResponse = {
-  CodeResult?: string,
-  CountRegenerate?: number,
-  SMSID?: string,
+  CodeResult?: string;
+  CountRegenerate?: number;
+  SMSID?: string;
 
-  ErrorMessage?: string,
-}
+  ErrorMessage?: string;
+};

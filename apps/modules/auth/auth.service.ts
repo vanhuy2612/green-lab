@@ -242,7 +242,10 @@ export class AuthService extends BaseService {
       content
     );
     if (result.error) {
-      throw new APIException(HttpStatus.INTERNAL_SERVER_ERROR, ErrorMessageKey.ESMS_RESPONSE_FAIL);
+      throw new APIException(
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        ErrorMessageKey.ESMS_RESPONSE_FAIL
+      );
     }
     return {
       status: HttpStatus.OK,
