@@ -49,6 +49,10 @@ export const ERROR_MESSAGES: ErrorMessageT = {
     code: ErrorMessageKey.BAD_REQUEST,
     message: 'BAD_REQUEST',
   },
+  ESMS_RESPONSE_FAIL: {
+    code: ErrorMessageKey.ESMS_RESPONSE_FAIL,
+    message: 'ESMS_RESPONSE_FAIL',
+  },
 };
 
 export default ERROR_MESSAGES;

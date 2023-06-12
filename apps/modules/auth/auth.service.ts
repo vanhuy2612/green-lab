@@ -147,10 +147,10 @@ export class AuthService extends BaseService {
       },
     });
     if (!validOTP) {
-        throw new APIException(
-          HttpStatus.BAD_REQUEST,
-          ErrorMessageKey.OTP_IS_INVALID
-        );
+      throw new APIException(
+        HttpStatus.BAD_REQUEST,
+        ErrorMessageKey.OTP_IS_INVALID
+      );
     }
     const existUser: User | null = await this.model.findFirst({
       where: {
@@ -241,8 +241,8 @@ export class AuthService extends BaseService {
       phoneNumber,
       content
     );
-    if (!result.error) {
-      throw new APIException(HttpStatus.INTERNAL_SERVER_ERROR, ErrorMessageKey);
+    if (result.error) {
+      throw new APIException(HttpStatus.INTERNAL_SERVER_ERROR, ErrorMessageKey.ESMS_RESPONSE_FAIL);
     }
     return {
       status: HttpStatus.OK,
