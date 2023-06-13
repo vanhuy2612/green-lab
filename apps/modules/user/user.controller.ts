@@ -15,7 +15,7 @@ import {
   PaginatedResponse,
   UserUpdateResponse,
 } from "@root/apps/dto/response";
-import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
+import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger";
 import {
   ApiExceptionResponse,
   ApiPaginatedResponse,
@@ -32,6 +32,7 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Get()
+  @ApiOperation({description: "Chưa sử dụng"})
   @ApiBearerAuth()
   @ApiPaginatedResponse(AccountDTO)
   @ApiExceptionResponse()
@@ -51,6 +52,7 @@ export class UserController {
   }
 
   @Put("/:id")
+  @ApiOperation({description: "Chưa sử dụng"})
   @ApiBearerAuth()
   @ApiExceptionResponse()
   async edit(

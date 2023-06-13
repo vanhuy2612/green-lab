@@ -123,3 +123,37 @@ export class CityDTO {
   @ApiProperty()
   name: string;
 }
+
+export class DistrictDTO {
+  @ApiProperty()
+  id: number;
+
+  @ApiProperty()
+  code: string;
+
+  @ApiProperty()
+  name: string;
+
+  @ApiProperty()
+  provinceCityCode: string;
+}
+
+export class VillageDTO {
+  @ApiProperty()
+  id: number;
+
+  @ApiProperty()
+  code: string;
+
+  @ApiProperty()
+  name: string;
+
+  @ApiProperty()
+  provinceCityCode: string;
+
+  @ApiProperty()
+  districtCode: string;
+}
+
+
+

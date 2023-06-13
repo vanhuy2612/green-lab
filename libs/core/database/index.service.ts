@@ -59,4 +59,15 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
       },
     });
   }
+
+  parseFuzzySearch(query: object): object {
+    for (let key in query) {
+      if (typeof query[key] === 'string') {
+        query[key] = {
+          contains: query[key],
+        }
+      }
+    }
+    return query;
+  }
 }

@@ -13,3 +13,16 @@ export enum AreaListCitiesSortBy {
   code = "code",
   name = "name",
 }
+
+export enum AreaListDistrictsSortBy {
+  code = "code",
+  name = "name",
+  provinceCityCode = "provinceCityCode",
+}
+
+export enum AreaListVillagesSortBy {
+  code = "code",
+  name = "name",
+  provinceCityCode = "provinceCityCode",
+  villageCode = "villageCode",
+}

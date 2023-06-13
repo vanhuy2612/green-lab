@@ -19,7 +19,7 @@ import {
 } from "@root/apps/shared/regex";
 import { IsEqualTo, toNumber } from "@root/apps/util/validation";
 import { OTPAction } from "@prisma/client";
-import { AreaListCitiesSortBy, OrderBy } from "./common";
+import { AreaListCitiesSortBy, AreaListDistrictsSortBy, AreaListVillagesSortBy, OrderBy } from "./common";
 import { Transform } from "class-transformer";
 import { PAGE_DEFAULT, PAGE_SIZE_DEFAULT } from "../shared/constant";
 export class LoginRequest {
@@ -133,6 +133,95 @@ export class AreaListCitiesRequest {
   @IsOptional()
   @IsEnum(AreaListCitiesSortBy)
   sortBy?: AreaListCitiesSortBy;
+
+  @ApiProperty({ enum: OrderBy })
+  @IsOptional()
+  @IsEnum(OrderBy)
+  orderBy?: OrderBy;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsNumber()
+  @Min(1)
+  @Transform(({ value }) => toNumber(value, { default: PAGE_DEFAULT, min: 1 }))
+  page?: number;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsNumber()
+  @Transform(({ value }) =>
+    toNumber(value, { default: PAGE_SIZE_DEFAULT, min: -1 })
+  )
+  size?: number;
+}
+
+export class AreaListDistrictsRequest {
+  @ApiProperty()
+  @IsOptional()
+  @IsString()
+  code?: string;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsString()
+  name?: string;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsString()
+  provinceCityCode?: string;
+
+  @ApiProperty({ enum: AreaListDistrictsSortBy })
+  @IsOptional()
+  @IsEnum(AreaListDistrictsSortBy)
+  sortBy?: AreaListDistrictsSortBy;
+
+  @ApiProperty({ enum: OrderBy })
+  @IsOptional()
+  @IsEnum(OrderBy)
+  orderBy?: OrderBy;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsNumber()
+  @Min(1)
+  @Transform(({ value }) => toNumber(value, { default: PAGE_DEFAULT, min: 1 }))
+  page?: number;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsNumber()
+  @Transform(({ value }) =>
+    toNumber(value, { default: PAGE_SIZE_DEFAULT, min: -1 })
+  )
+  size?: number;
+}
+
+export class AreaListVillagesRequest {
+  @ApiProperty()
+  @IsOptional()
+  @IsString()
+  code?: string;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsString()
+  name?: string;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsString()
+  provinceCityCode?: string;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsString()
+  districtCode?: string;
+
+  @ApiProperty({ enum: AreaListVillagesSortBy })
+  @IsOptional()
+  @IsEnum(AreaListVillagesSortBy)
+  sortBy?: AreaListVillagesSortBy;
 
   @ApiProperty({ enum: OrderBy })
   @IsOptional()
