@@ -3,18 +3,20 @@ import { AuthService } from "./auth.service";
 
 import { Exception } from "@root/libs/core/exception/Exception";
 import {
+  ForgotPasswordResponse,
   LoginResponse,
   RefreshTokenResponse,
   SendOTPResponse,
   SignUpResponse,
 } from "@root/apps/dto/response";
 import {
+  ForgotPasswordRequest,
   LoginRequest,
   RefreshTokenRequest,
   SendOTPRequest,
   SignUpRequest,
 } from "@root/apps/dto/request";
-import { ApiTags } from "@nestjs/swagger";
+import { ApiOperation, ApiTags } from "@nestjs/swagger";
 import {
   ApiExceptionResponse,
   CustomApiOKResponse,
@@ -30,6 +32,10 @@ export class AuthController {
   ) {}
 
   @Post("login")
+  @ApiOperation({
+    summary: "API đăng nhập (Not Auth)",
+    description: "API đăng nhập (Not Auth)",
+  })
   @CustomApiOKResponse(LoginResponse)
   @ApiExceptionResponse()
   async login(
@@ -45,6 +51,10 @@ export class AuthController {
   }
 
   @Post("signUp")
+  @ApiOperation({
+    summary: "API đăng ký tài khoản (Not Auth)",
+    description: "API đăng kí tài khoản (Not Auth)",
+  })
   @CustomApiOKResponse(SignUpResponse)
   @ApiExceptionResponse()
   async signUp(
@@ -60,6 +70,10 @@ export class AuthController {
   }
 
   @Post("refreshToken")
+  @ApiOperation({
+    summary: "API Refresh token bị hết hạn (Not Auth)",
+    description: "API Refresh token bị hết hạn",
+  })
   @CustomApiOKResponse(RefreshTokenResponse)
   @ApiExceptionResponse()
   async refreshToken(
@@ -74,7 +88,31 @@ export class AuthController {
     }
   }
 
+  @Post("forgotPassword")
+  @ApiOperation({
+    summary: "API Quên mật khẩu (Not Auth)",
+    description: "API Quên mật khẩu",
+  })
+  @CustomApiOKResponse(ForgotPasswordResponse)
+  @ApiExceptionResponse()
+  async forgotPassword(
+    @Body() body: ForgotPasswordRequest,
+    @Req() req: any
+  ): Promise<ForgotPasswordResponse> {
+    try {
+      const res = await this.authService.forgotPassword(body);
+      return res;
+    } catch (e) {
+      await Exception.handle(req, e);
+    }
+  }
+
   @Post("sendOTP")
+  @ApiOperation({
+    summary:
+      "API gửi mã OTP cho nhiều tính năng khác nhau (đăng ký, ...) (Not Auth)",
+    description: "PI gửi mã OTP cho nhiều tính năng khác nhau (đăng ký, ...)",
+  })
   @ApiExceptionResponse()
   async sendOTP(
     @Body() body: SendOTPRequest,

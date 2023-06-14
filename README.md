@@ -11,3 +11,7 @@ Mr.Huy
 yarn
 yarn prisma generate
 yarn start:dev : For Dev
+
+# Build project
+cd /build
+sh dev.sh

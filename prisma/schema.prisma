@@ -12,7 +12,7 @@ model User {
   id              Int       @id @default(autoincrement())
   // ---------FK----------
   // Tỉnh - Thành Phố
-  province_cityId Int?
+  provinceCityId Int?
   // Quận - Huyện
   districtId      Int?
   // Xã-Phường
@@ -25,7 +25,7 @@ model User {
   // Ngày sinh
   birthday        DateTime?
   // Giới tính, true === 'Nam'
-  sex             Boolean   @default(true)
+  sex             Int   @default(0)
   // Mã quốc gia
   regionCode      String?   @default("+84")
   // Số điện thoại, dùng cho sign-in
@@ -45,7 +45,7 @@ model User {
 
   // Relation
   otps         OTP[]         @relation(name: "user 1-n otp")
-  provinceCity ProvinceCity? @relation(name: "province 1-n user", fields: [province_cityId], references: [id])
+  provinceCity ProvinceCity? @relation(name: "province 1-n user", fields: [provinceCityId], references: [id])
   district     District?     @relation(name: "district 1-n user", fields: [districtId], references: [id])
   village      Village?      @relation(name: "village 1-n user", fields: [villageId], references: [id])
 

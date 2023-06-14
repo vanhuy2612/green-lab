@@ -1,37 +1,25 @@
-import {
-  Body,
-  Controller,
-  Get,
-  Param,
-  ParseIntPipe,
-  Put,
-  Query,
-  Req,
-  UseGuards,
-} from "@nestjs/common";
+import { Controller, Get, Query, Req } from "@nestjs/common";
 import { AreaService } from "./area.service";
 import { ApiOperation, ApiTags } from "@nestjs/swagger";
 import {
   ApiExceptionResponse,
   ApiPaginatedResponse,
 } from "@root/apps/decorator/response.decorator";
-import {
-  AccountDTO,
-  CityDTO,
-  DistrictDTO,
-  PaginatedResponse,
-  UserUpdateResponse,
-  VillageDTO,
-} from "@root/apps/dto/response";
+
 import { RequestTransformPipe } from "@root/apps/pipe/request.pipe";
 import {
   AreaListCitiesRequest,
   AreaListDistrictsRequest,
   AreaListVillagesRequest,
-  UserIndexRequest,
 } from "@root/apps/dto/request";
 import { AuthDecorator } from "@root/apps/decorator/auth.decorator";
 import { Exception } from "@root/libs/core/exception/Exception";
+import {
+  DistrictDTO,
+  ProvinceCityDTO,
+  VillageDTO,
+} from "@root/apps/dto/common";
+import { PaginatedResponse } from "@root/apps/dto/response";
 
 @ApiTags("area")
 @Controller("area")
@@ -39,16 +27,19 @@ export class AreaController {
   constructor(private readonly areaService: AreaService) {}
 
   @Get("/cities")
-  @ApiOperation({description: "Lấy danh sách thành phố, (getAll size=-1)"})
-  @ApiPaginatedResponse(CityDTO)
+  @ApiOperation({
+    summary: "API lấy danh sách thành phố, (getAll size=-1)",
+    description: "Lấy danh sách thành phố, (getAll size=-1)",
+  })
+  @ApiPaginatedResponse(ProvinceCityDTO)
   @ApiExceptionResponse()
   async listCities(
     @Req() req: any,
     @Query(new RequestTransformPipe()) query: AreaListCitiesRequest,
     @AuthDecorator() auth: any
-  ): Promise<PaginatedResponse<CityDTO>> {
+  ): Promise<PaginatedResponse<ProvinceCityDTO>> {
     try {
-      const result: PaginatedResponse<CityDTO> =
+      const result: PaginatedResponse<ProvinceCityDTO> =
         await this.areaService.listCities(query);
       return result;
     } catch (e) {
@@ -58,8 +49,11 @@ export class AreaController {
   }
 
   @Get("/districts")
-  @ApiOperation({description: "Lấy danh sách quận huyện, (getAll size=-1)"})
-  @ApiPaginatedResponse(CityDTO)
+  @ApiOperation({
+    summary: "API lấy danh sách quận huyện, (getAll size=-1)",
+    description: "Lấy danh sách quận huyện, (getAll size=-1)",
+  })
+  @ApiPaginatedResponse(DistrictDTO)
   @ApiExceptionResponse()
   async listDistricts(
     @Req() req: any,
@@ -77,8 +71,11 @@ export class AreaController {
   }
 
   @Get("/villages")
-  @ApiOperation({description: "Lấy danh sách làng xã, (getAll size=-1)"})
-  @ApiPaginatedResponse(CityDTO)
+  @ApiOperation({
+    summary: "API lấy danh sách làng xã, (getAll size=-1)",
+    description: "Lấy danh sách làng xã, (getAll size=-1)",
+  })
+  @ApiPaginatedResponse(VillageDTO)
   @ApiExceptionResponse()
   async listVillages(
     @Req() req: any,

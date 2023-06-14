@@ -1,6 +1,7 @@
 import { HttpStatus } from "@nestjs/common";
 import { ApiProperty } from "@nestjs/swagger";
 import { ErrorMessageKey } from "@root/libs/core/exception/lang";
+import { ProfileDTO } from "./common";
 
 export class PaginatedResponse<TData> {
   @ApiProperty()
@@ -39,22 +40,6 @@ export class ExceptionResponse {
   @ApiProperty({ type: ExceptionDTO })
   error: ExceptionDTO;
 }
-export class AccountDTO {
-  @ApiProperty()
-  id: number;
-
-  @ApiProperty()
-  email: string;
-
-  @ApiProperty()
-  name: string;
-
-  @ApiProperty()
-  password: string;
-
-  @ApiProperty()
-  roleId: number;
-}
 
 export class LoginDataDTO {
   @ApiProperty()
@@ -86,13 +71,6 @@ export class UserIndexResponse {
   data: any[];
 }
 
-export class UserUpdateResponse {
-  @ApiProperty()
-  status: HttpStatus;
-  @ApiProperty()
-  data: boolean;
-}
-
 class SignUpDataDTO {
   @ApiProperty()
   id: number;
@@ -113,47 +91,27 @@ export class SendOTPResponse {
   data: boolean;
 }
 
-export class CityDTO {
+class ForgotPasswordDataDTO {
   @ApiProperty()
-  id: number;
-
+  phoneNumber: string;
+}
+export class ForgotPasswordResponse {
   @ApiProperty()
-  code: string;
-
+  status: HttpStatus;
   @ApiProperty()
-  name: string;
+  data: ForgotPasswordDataDTO;
 }
 
-export class DistrictDTO {
+export class UserProfileResponse {
   @ApiProperty()
-  id: number;
-
+  status: HttpStatus;
   @ApiProperty()
-  code: string;
-
-  @ApiProperty()
-  name: string;
-
-  @ApiProperty()
-  provinceCityCode: string;
+  data: ProfileDTO;
 }
 
-export class VillageDTO {
+export class UserUpdateProfileResponse {
   @ApiProperty()
-  id: number;
-
+  status: HttpStatus;
   @ApiProperty()
-  code: string;
-
-  @ApiProperty()
-  name: string;
-
-  @ApiProperty()
-  provinceCityCode: string;
-
-  @ApiProperty()
-  districtCode: string;
+  data: ProfileDTO;
 }
-
-
-

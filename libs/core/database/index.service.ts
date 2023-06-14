@@ -3,6 +3,7 @@ import { Prisma, PrismaClient } from "@prisma/client";
 import { URLSearchParams } from "url";
 import { exec } from "child_process";
 import { cwd } from "process";
+import { OrderBy } from "@root/apps/dto/common";
 
 type DBConfig = {
   DB_TYPE: string;
@@ -62,12 +63,28 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
 
   parseFuzzySearch(query: object): object {
     for (let key in query) {
-      if (typeof query[key] === 'string') {
+      if (typeof query[key] === "string") {
         query[key] = {
           contains: query[key],
-        }
+        };
       }
     }
     return query;
+  }
+
+  parseOrder<T>(
+    ...params: [string | undefined, string | undefined][]
+  ): T[] | undefined {
+    const query = [];
+    for (let pair of params) {
+      const sortBy = pair[0];
+      const orderBy = pair[1] || OrderBy.desc;
+      if (sortBy)
+        query.push({
+          [sortBy]: orderBy,
+        });
+    }
+    if (!query.length) return undefined;
+    return query as T[];
   }
 }

@@ -5,19 +5,21 @@ import { PrismaService } from "@root/libs/core/database/index.service";
 import { LoggerService } from "@root/libs/core/logger/index.service";
 import { ErrorMessageKey } from "@root/libs/core/exception/lang";
 import {
+  ForgotPasswordResponse,
   LoginResponse,
   RefreshTokenResponse,
   SendOTPResponse,
   SignUpResponse,
 } from "@root/apps/dto/response";
 import {
+  ForgotPasswordRequest,
   LoginRequest,
   RefreshTokenRequest,
   SendOTPRequest,
   SignUpRequest,
 } from "@root/apps/dto/request";
 import { JwtService } from "@nestjs/jwt";
-import { OTP, Prisma, User } from "@prisma/client";
+import { OTP, OTPAction, Prisma, User } from "@prisma/client";
 import { authConfig } from "@root/apps/shared/auth";
 import { compare, generateOTP, hash, unixMoment } from "@root/apps/util/util";
 import { v4 } from "uuid";
@@ -141,16 +143,19 @@ export class AuthService extends BaseService {
       where: {
         phoneNumber,
         code: otp,
+        action: OTPAction.SIGN_UP,
         expiredAt: {
           gte: unixMoment().format(),
         },
       },
     });
     if (!validOTP) {
-      throw new APIException(
-        HttpStatus.BAD_REQUEST,
-        ErrorMessageKey.OTP_IS_INVALID
-      );
+      if (process.env.NODE_ENV !== "development") {
+        throw new APIException(
+          HttpStatus.BAD_REQUEST,
+          ErrorMessageKey.OTP_IS_INVALID
+        );
+      }
     }
     const existUser: User | null = await this.model.findFirst({
       where: {
@@ -177,6 +182,56 @@ export class AuthService extends BaseService {
       data: {
         id: created.id,
         phoneNumber: created.phoneNumber,
+      },
+    };
+  }
+
+  async forgotPassword(
+    params: ForgotPasswordRequest
+  ): Promise<ForgotPasswordResponse> {
+    const { phoneNumber, password, otp } = params;
+    const validOTP: OTP | null = await this.prismaService.oTP.findFirst({
+      where: {
+        phoneNumber,
+        code: otp,
+        action: OTPAction.FORGOT_PASSWORD,
+        expiredAt: {
+          gte: unixMoment().format(),
+        },
+      },
+    });
+    if (!validOTP) {
+      if (process.env.NODE_ENV !== "development") {
+        throw new APIException(
+          HttpStatus.BAD_REQUEST,
+          ErrorMessageKey.OTP_IS_INVALID
+        );
+      }
+    }
+    const user: User | null = await this.model.findFirst({
+      where: {
+        phoneNumber,
+      },
+    });
+    if (!user) {
+      throw new APIException(
+        HttpStatus.NOT_FOUND,
+        ErrorMessageKey.USER_NOT_FOUND
+      );
+    }
+    const salt: string = v4();
+    const encryptedPassword: string = await hash(password, salt);
+    const updatedUser: User = await this.model.update({
+      where: { id: user.id },
+      data: {
+        salt,
+        password: encryptedPassword,
+      },
+    });
+    return {
+      status: HttpStatus.OK,
+      data: {
+        phoneNumber: updatedUser.phoneNumber,
       },
     };
   }

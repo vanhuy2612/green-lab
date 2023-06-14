@@ -1,29 +1,19 @@
-import {
-  Body,
-  Controller,
-  Get,
-  Param,
-  ParseIntPipe,
-  Put,
-  Req,
-  UseGuards,
-} from "@nestjs/common";
+import { Body, Controller, Get, Put, Req, UseGuards } from "@nestjs/common";
 import { Exception } from "@root/libs/core/exception/Exception";
 import { UserService } from "./user.service";
 import {
-  AccountDTO,
-  PaginatedResponse,
-  UserUpdateResponse,
+  UserUpdateProfileResponse,
+  UserProfileResponse,
 } from "@root/apps/dto/response";
 import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger";
 import {
   ApiExceptionResponse,
-  ApiPaginatedResponse,
+  CustomApiOKResponse,
 } from "@root/apps/decorator/response.decorator";
 import { AuthDecorator } from "@root/apps/decorator/auth.decorator";
-import { UserIndexRequest, UserUpdateRequest } from "@root/apps/dto/request";
-import { RequestTransformPipe } from "@root/apps/pipe/request.pipe";
+import { UserUpdateProfileRequest } from "@root/apps/dto/request";
 import { AuthGuard } from "@root/apps/guard/auth.guard";
+import { ProfileDTO } from "@root/apps/dto/common";
 
 @ApiTags("users")
 @Controller("users")
@@ -31,19 +21,20 @@ import { AuthGuard } from "@root/apps/guard/auth.guard";
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Get()
-  @ApiOperation({description: "Chưa sử dụng"})
+  @Get("profile")
+  @ApiOperation({
+    summary: "API Người dùng tự lấy thông tin profile của bản thân",
+    description: "API Người dùng tự lấy thông tin profile của bản thân",
+  })
   @ApiBearerAuth()
-  @ApiPaginatedResponse(AccountDTO)
+  @CustomApiOKResponse(ProfileDTO)
   @ApiExceptionResponse()
-  async index(
+  async profile(
     @Req() req: any,
-    @Body(new RequestTransformPipe()) query: UserIndexRequest,
     @AuthDecorator() auth: any
-  ): Promise<PaginatedResponse<AccountDTO>> {
+  ): Promise<UserProfileResponse> {
     try {
-      console.log("Request.users.index", auth, auth.permissions);
-      const result = await this.userService.index(query);
+      const result = await this.userService.profile(auth.id);
       return result;
     } catch (e) {
       console.log(e);
@@ -51,22 +42,21 @@ export class UserController {
     }
   }
 
-  @Put("/:id")
-  @ApiOperation({description: "Chưa sử dụng"})
+  @Put("update")
+  @ApiOperation({
+    summary: "API Người dùng tự update thông tin profile của bản thân",
+    description: "API Người dùng tự update thông tin profile của bản thân",
+  })
   @ApiBearerAuth()
+  @CustomApiOKResponse(ProfileDTO)
   @ApiExceptionResponse()
-  async edit(
+  async update(
     @Req() req: any,
-    @Body(new RequestTransformPipe())
-    body: UserUpdateRequest,
-    @Param("id", ParseIntPipe) id: number,
+    @Body() body: UserUpdateProfileRequest,
     @AuthDecorator() auth: any
-  ): Promise<UserUpdateResponse> {
+  ): Promise<UserUpdateProfileResponse> {
     try {
-      console.log("id", id);
-      console.log("Request.users.edit", auth, auth.permissions);
-
-      const result = await this.userService.edit(body);
+      const result = await this.userService.update(auth.id, body);
       return result;
     } catch (e) {
       console.log(e);
